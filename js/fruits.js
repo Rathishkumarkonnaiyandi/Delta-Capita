@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruits Delight</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/fruits.css">
+ 
+</head>
+<body>
+  <header>
+    <div >
+      <a href="#" >
+        <ion-icon name="fast-fruits"></ion-icon>
+        Fruits Delight
+      </a>
+
+      <div class="box">
+        <div class="cart-count">0</div>
+        <ion-icon name="cart"  id="cart-icon" onclick=""></ion-icon>
+      </div>
+
+      <div class="cart">
+        <div class="cart-title">Cart Items</div>
+        <div class="cart-content">
+        </div>
+      <div class="total">
+        <div class="total-title">Total</div>
+        <div class="total-price">Rs.0</div>
+      </div>
+      <button class="btn-buy">Place Order</button>
+      <ion-icon name="close" id="cart-close"></ion-icon>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <h2 class="title">Discover the Best Fruits</h2>
+    <div class="shop-content">
+      <div class="fruits-box">
+        <h2 class="fruits-title">Apple</h2>
+        <span class="fruits-price">Rs.35p</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+      <div class="fruits-box">
+         <h2 class="fruits-title">Banana</h2>
+        <span class="fruits-price">Rs.20p</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+  
+      <div class="fruits-box">
+        <h2 class="fruits-title">Melons</h2>
+        <span class="fruits-price1">Rs.50p Buy 1 Get 1</span>
+	<span class="fruits-price" style="display:none">Rs.25p</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div> 
+      
+      <div class="fruits-box">
+        <h2 class="fruits-title">Limes </h2>
+        <span class="fruits-price1">Rs.15p three for the </br>price of two </span>
+	<span class="fruits-price" style="display:none">Rs.5p</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div> 
+      
+      </div>
+  </div>
+  <script src="js/script.js"></script>
+</body>
+ <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js">
+ </script>
+ <script>
+ const btnCart=document.querySelector('#cart-icon');
+const cart=document.querySelector('.cart');
+const btnClose=document.querySelector('#cart-close');
+
+btnCart.addEventListener('click',()=>{
+  cart.classList.add('cart-active');
+});
+
+btnClose.addEventListener('click',()=>{
+  cart.classList.remove('cart-active');
+});
+
+document.addEventListener('DOMContentLoaded',loadFood);
+
+function loadFood(){
+  loadContent();
+
+}
+
+function loadContent(){
+
+  //Remove Food Items  From Cart
+  let btnRemove=document.querySelectorAll('.cart-remove');
+  btnRemove.forEach((btn)=>{
+    btn.addEventListener('click',removeItem);
+  });
+
+  //Product Item Change Event
+  let qtyElements=document.querySelectorAll('.cart-quantity');
+  qtyElements.forEach((input)=>{
+    input.addEventListener('change',changeQty);
+  });
+
+  //Product Cart
+  
+  let cartBtns=document.querySelectorAll('.add-cart');
+  cartBtns.forEach((btn)=>{
+    btn.addEventListener('click',addCart);
+  });
+
+  updateTotal();
+}
+
+
+//Remove Item
+function removeItem(){
+  if(confirm('Are Your Sure to Remove')){
+    let title=this.parentElement.querySelector('.cart-fruits-title').innerHTML;
+    itemList=itemList.filter(el=>el.title!=title);
+    this.parentElement.remove();
+    loadContent();
+  }
+}
+
+//Change Quantity
+function changeQty(){
+let title=this.parentElement.querySelector('.cart-fruits-title').innerHTML;
+
+if(title=="Melons"){
+    this.value= parseInt(this.value) + parseInt("1");
+}
+else{
+
+  if(this.value>=2){
+
+     this.value= Math.floor(parseInt(this.value) + (parseInt(this.value)/ parseInt("2")));
+
+  }
+}
+
+  loadContent();
+}
+
+let itemList=[];
+
+//Add Cart
+function addCart(){
+ let fruits=this.parentElement;
+ let title=fruits.querySelector('.fruits-title').innerHTML;
+ let price=fruits.querySelector('.fruits-price').innerHTML;
+ 
+ let newProduct={title,price}
+
+ //Check Product already Exist in Cart
+ if(itemList.find((el)=>el.title==newProduct.title)){
+  alert("Product Already added in Cart");
+  return;
+ }else{
+  itemList.push(newProduct);
+ }
+
+if(title =="Melons"){
+
+let newProductElement= createCartProductMelon(title,price);
+let element=document.createElement('div');
+element.innerHTML=newProductElement;
+let cartBasket=document.querySelector('.cart-content');
+cartBasket.append(element);
+loadContent();
+}
+else{
+let newProductElement= createCartProduct(title,price);
+let element=document.createElement('div');
+element.innerHTML=newProductElement;
+let cartBasket=document.querySelector('.cart-content');
+cartBasket.append(element);
+loadContent();
+}
+}
+
+
+function createCartProduct(title,price,imgSrc){
+  return `
+  <div class="cart-box">
+  
+  <div class="detail-box">
+    <div class="cart-fruits-title">${title}</div>
+    <div class="price-box">
+      <div class="cart-price">${price}</div>
+       <div class="cart-amt">${price}</div>
+   </div>
+	<input type="number" value="1" class="cart-quantity">
+      </div>
+  <ion-icon name="trash" class="cart-remove"></ion-icon>
+</div>
+ `;
+}
+
+function createCartProductMelon(title,price,imgSrc){
+  return `
+  <div class="cart-box">
+  
+  <div class="detail-box">
+    <div class="cart-fruits-title">${title}</div>
+    <div class="price-box">
+      <div class="cart-price">${price}</div>
+       <div class="cart-amt">${price}</div>
+   </div>
+	<input type="number" value="2" class="cart-quantity">
+      </div>
+  <ion-icon name="trash" class="cart-remove"></ion-icon>
+</div>
+ `;
+}
+
+function updateTotal()
+{
+  const cartItems=document.querySelectorAll('.cart-box');
+  const totalValue=document.querySelector('.total-price');
+
+  let total=0;
+
+  cartItems.forEach(product=>{
+    let priceElement=product.querySelector('.cart-price');
+    let price=parseFloat(priceElement.innerHTML.replace("Rs.",""));
+    let qty=product.querySelector('.cart-quantity').value;
+    let title=product.querySelector('.cart-fruits-title').value;
+    total+=(price*qty);
+    product.querySelector('.cart-amt').innerText="Rs."+(price*qty)+"p";
+
+  });
+
+  totalValue.innerHTML='Rs.'+total+"p";
+
+
+  // Add Product Count in Cart Icon
+
+  const cartCount=document.querySelector('.cart-count');
+  let count=itemList.length;
+  cartCount.innerHTML=count;
+
+  if(count==0){
+    cartCount.style.display='none';
+  }else{
+    cartCount.style.display='block';
+  }
+}
+  </script>
+</html>
